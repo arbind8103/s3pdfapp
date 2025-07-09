@@ -1,0 +1,77 @@
+<!-- templates/dashboard.html -->
+<!DOCTYPE html>
+<html>
+<head>
+  <title>PDF Dashboard</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+  <div class="dashboard">
+    <div class="dashboard-header">
+      <h2>Welcome, {{ user }}</h2>
+      <form action="/logout" method="get">
+        <button class="logout-btn">Logout</button>
+      </form>
+    </div>
+
+    <form method="get" action="/dashboard" class="search-bar">
+      <input name="query" value="{{ query }}" placeholder="🔍 File name..." id="filename-input" autocomplete="off">
+      <input type="date" name="start_date" value="{{ start_date }}">
+      <input type="date" name="end_date" value="{{ end_date }}">
+      <select name="file_type">
+        <option value="">All Types</option>
+        <option value="pdf">PDF</option>
+        <option value="docx">DOCX</option>
+        <option value="xlsx">XLSX</option>
+      </select>
+      <select name="sort_by">
+        <option value="newest">Newest First</option>
+        <option value="oldest">Oldest First</option>
+        <option value="az">A–Z</option>
+        <option value="za">Z–A</option>
+      </select>
+      <button type="submit">Search</button>
+    </form>
+
+    <div id="autocomplete-box"></div>
+
+    {% for file in files %}
+      <div class="pdf-block">
+        <div>
+          <strong>{{ file.name }}</strong>
+          <small>{{ file.last_modified }}</small>
+        </div>
+        <div>
+          <a href="{{ file.url }}" target="_blank">View</a>
+          <a href="{{ file.url }}" download>Download</a>
+          <button onclick="window.open('{{ file.url }}')">Print</button>
+        </div>
+      </div>
+    {% else %}
+      <p>No files found.</p>
+    {% endfor %}
+
+    <script>
+      document.getElementById("filename-input").addEventListener("input", function(e) {
+        fetch(`/autocomplete?prefix=${e.target.value}`)
+          .then(response => response.json())
+          .then(data => {
+            let box = document.getElementById("autocomplete-box");
+            box.innerHTML = "";
+            data.suggestions.forEach(s => {
+              let item = document.createElement("div");
+              item.textContent = s;
+              item.className = "suggestion";
+              item.onclick = () => {
+                e.target.value = s;
+                box.innerHTML = "";
+              };
+              box.appendChild(item);
+            });
+          });
+      });
+    </script>
+  </div>
+</body>
+</html>

@@ -1,0 +1,45 @@
+<!-- templates/admin.html -->
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Admin Panel - User Management</title>
+    <link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+<div class="dashboard">
+    <div class="dashboard-header">
+        <h2>Admin Panel - Manage Users</h2>
+        <form action="/logout" method="get">
+            <button class="logout-btn">Logout</button>
+        </form>
+    </div>
+
+    <form method="post" action="/admin/add" class="search-bar">
+        <input type="text" name="username" placeholder="Username" required>
+        <input type="password" name="password" placeholder="Password" required>
+        <select name="role">
+            <option value="user">User</option>
+            <option value="admin">Admin</option>
+        </select>
+        <button type="submit">Add User</button>
+    </form>
+
+    <h3>Existing Users</h3>
+    {% for user in users %}
+        <div class="pdf-block">
+            <div>
+                <strong>{{ user.username }}</strong><br>
+                <small>Role: {{ user.role }}</small>
+            </div>
+            {% if user.username != "admin" %}
+            <form method="post" action="/admin/delete">
+                <input type="hidden" name="user_id" value="{{ user.id }}">
+                <button class="logout-btn" style="background:#e67e22">Delete</button>
+            </form>
+            {% endif %}
+        </div>
+    {% endfor %}
+</div>
+</body>
+</html>

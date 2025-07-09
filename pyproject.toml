@@ -1,0 +1,16 @@
+[project]
+name = "s3pdfapp"
+version = "0.1.0"
+description = "FastAPI app for PDF viewer with S3"
+dependencies = [
+    "fastapi",
+    "uvicorn",
+    "boto3",
+    "jinja2",
+    "python-multipart",
+    "passlib[bcrypt]",
+    "sqlalchemy",
+    "aiofiles",
+    "python-dotenv",
+    "bcrypt>=4.3.0",
+]
